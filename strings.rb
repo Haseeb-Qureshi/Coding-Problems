@@ -65,17 +65,22 @@ def compress(str)
   [str, compressed].min_by(&:length)
 end
 
-#given a 2x2 grid of size MxN, make every row and column that has a 0 in it become all 0s
+#given a 2-D grid of size MxN, make every row and column that has a 0 in it become all 0s
+
+require 'set'
 
 def run_zeroes(grid)
   zero_cols = Set.new
+  grid = grid.dup.map(&:dup)
+
   grid.length.times do |i|
     row_filled = false
     grid.first.length.times do |j|
       if grid[i][j] == 0
-        fill_row_with_zeroes!(grid, i) unless row_filled
-        row_filled = true
+        break if row_filled
+        fill_row_with_zeroes!(grid, i)
         zero_cols << j
+        row_filled = true
       end
     end
   end
@@ -88,7 +93,22 @@ def fill_row_with_zeroes!(grid, i)
 end
 
 def fill_col_with_zeroes!(grid, j)
-  (0...grid.length).times do |i|
+  (0...grid.length).each do |i|
     grid[i][j] = 0
   end
 end
+
+#do it now with O(1) space complexity
+
+#rotate a 2-D NxN matrix by 90 degrees
+def rotate_90(grid)
+  rot_grid = grid.dup.map(&:dup)
+  grid.length.each do |i|
+    grid.length.each do |j|
+      rot_grid[i][j] = grid[j][i]
+    end
+  end
+  rot_grid
+end
+
+#now do it in-place
